@@ -5,7 +5,10 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 	"os"
+	"os/exec"
+	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -19,6 +22,8 @@ var rootCmd = &cobra.Command{
 		if len(args) != 0 {
 			folderName := args[0]
 			createDefaulAzleProject(folderName)
+		} else {
+			createDefaulAzleProject(".")
 		}
 	},
 }
@@ -35,5 +40,33 @@ func init() {
 }
 
 func createDefaulAzleProject(folderName string) {
-	fmt.Println("Create a azle project")
+	var initialzedProjectPath = ""
+	path, err := os.Getwd()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if folderName == "." {
+		pathComponents := strings.Split(path, "/")
+		currentDir := pathComponents[len(pathComponents)-1]
+		initialzedProjectPath = path + "/" + currentDir
+	} else {
+		initialzedProjectPath = path + "/" + folderName
+	}
+
+	defaultAzleProjectPath := "./starter-kits/default"
+	cmd := exec.Command("cp", "-r", defaultAzleProjectPath, initialzedProjectPath)
+	initializedProjectErr := cmd.Run()
+	if initializedProjectErr != nil {
+		log.Fatal(initializedProjectErr.Error())
+	}
+	fmt.Println("-------------------Created a azle project------------------------------")
+	fmt.Println("-------------------Installing Dependencies------------------------------")
+	installDependenciesCmd := exec.Command("npm", "install")
+	installDependenciesCmd.Dir = initialzedProjectPath
+	installDependenciesCmdErr := installDependenciesCmd.Run()
+	if installDependenciesCmdErr != nil {
+		log.Fatal(installDependenciesCmdErr.Error())
+	}
+	fmt.Println("-------------------Installed dependencies------------------------------")
 }
