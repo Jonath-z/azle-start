@@ -1,6 +1,3 @@
-/*
-Copyright © 2023 NAME HERE <EMAIL ADDRESS>
-*/
 package cmd
 
 import (
@@ -13,7 +10,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "azle-start",
 	Short: "Welcome to azle-start.",
@@ -58,15 +54,16 @@ func createDefaulAzleProject(folderName string) {
 	cmd := exec.Command("cp", "-r", defaultAzleProjectPath, initialzedProjectPath)
 	initializedProjectErr := cmd.Run()
 	if initializedProjectErr != nil {
-		log.Fatal(initializedProjectErr.Error())
+		log.Fatal(initializedProjectErr)
 	}
 	fmt.Println("-------------------Created a azle project------------------------------")
 	fmt.Println("-------------------Installing Dependencies------------------------------")
 	installDependenciesCmd := exec.Command("npm", "install")
-	installDependenciesCmd.Dir = initialzedProjectPath
+	fmt.Println(installDependenciesCmd.ProcessState.String())
+
 	installDependenciesCmdErr := installDependenciesCmd.Run()
 	if installDependenciesCmdErr != nil {
-		log.Fatal(installDependenciesCmdErr.Error())
+		log.Fatal(installDependenciesCmdErr)
 	}
 	fmt.Println("-------------------Installed dependencies------------------------------")
 }

@@ -1,11 +1,19 @@
-/*
-Copyright © 2023 NAME HERE <EMAIL ADDRESS>
-
-*/
 package main
 
-import "github.com/Jonath-z/azle-start/cmd"
+import (
+	"fmt"
+	"os"
+
+	"github.com/Jonath-z/azle-start/ui"
+	tea "github.com/charmbracelet/bubbletea"
+)
 
 func main() {
-	cmd.Execute()
+	// cmd.Execute()
+	p := tea.NewProgram(ui.InitialModel())
+	if _, err := p.Run(); err != nil {
+		fmt.Printf("Alas, there's been an error: %v", err)
+		os.Exit(1)
+	}
+
 }
