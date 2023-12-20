@@ -4,6 +4,13 @@ import (
 	"fmt"
 
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
+)
+
+var (
+	green = lipgloss.Color("#04B575")
+	gray  = lipgloss.Color("#808080")
+	white = lipgloss.Color("#fff")
 )
 
 type model struct {
@@ -13,10 +20,13 @@ type model struct {
 }
 
 func InitialModel() model {
-	return model{
+	m := model{
 		choices:  []string{"default", "assistant-bot", "chat-completion-bot"},
+		cursor:   0,
 		selected: 0,
 	}
+
+	return m
 }
 
 func (m model) Init() tea.Cmd {
@@ -27,7 +37,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
-		case "ctl+c", "Q", "q":
+		case "ctrl+c", "Q", "q":
 			return m, tea.Quit
 		case "up", "k":
 			if m.cursor > 0 {
@@ -38,8 +48,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.cursor++
 			}
 		case "enter", " ":
-			fmt.Println(m.cursor)
 			m.selected = m.cursor
+			return m, tea.Quit
 		}
 	}
 
@@ -52,13 +62,16 @@ func (m model) View() string {
 	for i, choice := range m.choices {
 		cursor := "   "
 		if m.cursor == i {
-			cursor = ">>>"
+			activeCursor := lipgloss.NewStyle().Foreground(green).Render(">>>")
+			activeChoice := lipgloss.NewStyle().Foreground(green).Underline(true).Render(choice)
+			s += fmt.Sprintf("%s %s\n", activeCursor, activeChoice)
+		} else {
+			inactiveChoice := lipgloss.NewStyle().Foreground(white).Underline(false).Render(choice)
+			s += fmt.Sprintf("%s %s\n", cursor, inactiveChoice)
 		}
-
-		s += fmt.Sprintf("%s %s\n", cursor, choice)
 	}
-
-	s += "\nPress q to quit.\n"
+	text := lipgloss.NewStyle().Foreground(gray).Render("Press q, Q, ctrl+c to quit.")
+	s += "\n" + text + "\n"
 
 	return s
 }
