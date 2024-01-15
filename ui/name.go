@@ -27,8 +27,9 @@ func (state nameState) Init() tea.Cmd {
 func (state nameState) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
+
 		if len(msg.Runes) > 0 {
-			if unicode.IsLetter(msg.Runes[0]) || unicode.IsDigit(msg.Runes[0]) {
+			if !unicode.IsSymbol(msg.Runes[0]) {
 				state.name += msg.String()
 			}
 		}
