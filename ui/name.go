@@ -48,7 +48,7 @@ func (state nameState) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (state nameState) View() string {
-	s := "What the project name: "
+	s := "What's the project name: "
 	projectName := lipgloss.NewStyle().Foreground(colors.Green).Render(state.name)
 	return s + projectName
 }
