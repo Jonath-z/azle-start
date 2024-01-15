@@ -17,16 +17,14 @@ var rootCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
 			p := tea.NewProgram(ui.InitialModel())
-			model, err := p.Run()
+			_, err := p.Run()
 			if err != nil {
 				fmt.Printf("Alas, there's been an error: %v", err)
 				os.Exit(1)
 			}
 
-			fmt.Println("the model", model)
-			// createDefaulAzleProject()
 		} else {
-			utils.CreateDefaulAzleProject(".")
+			utils.CreateDefaulAzleProject(".", &args[1])
 		}
 	},
 }

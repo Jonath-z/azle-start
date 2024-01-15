@@ -2,15 +2,12 @@ package ui
 
 import (
 	"fmt"
+	"log"
+	"os"
 
+	colors "github.com/Jonath-z/azle-start/ui/Colors"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-)
-
-var (
-	green = lipgloss.Color("#04B575")
-	gray  = lipgloss.Color("#808080")
-	white = lipgloss.Color("#fff")
 )
 
 type model struct {
@@ -49,7 +46,13 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		case "enter", " ":
 			m.selected = m.cursor
-			return m, tea.Quit
+			nameState := tea.NewProgram(InitializeNameState())
+			_, err := nameState.Run()
+			if err != nil {
+				log.Fatal("Error while initializing the name layout")
+				os.Exit(1)
+			}
+			return m, nil
 		}
 	}
 
@@ -62,15 +65,15 @@ func (m model) View() string {
 	for i, choice := range m.choices {
 		cursor := "   "
 		if m.cursor == i {
-			activeCursor := lipgloss.NewStyle().Foreground(green).Render(">>>")
-			activeChoice := lipgloss.NewStyle().Foreground(green).Underline(true).Render(choice)
+			activeCursor := lipgloss.NewStyle().Foreground(colors.Green).Render(">>>")
+			activeChoice := lipgloss.NewStyle().Foreground(colors.Green).Underline(true).Render(choice)
 			s += fmt.Sprintf("%s %s\n", activeCursor, activeChoice)
 		} else {
-			inactiveChoice := lipgloss.NewStyle().Foreground(white).Underline(false).Render(choice)
+			inactiveChoice := lipgloss.NewStyle().Foreground(colors.White).Underline(false).Render(choice)
 			s += fmt.Sprintf("%s %s\n", cursor, inactiveChoice)
 		}
 	}
-	text := lipgloss.NewStyle().Foreground(gray).Render("Press q, Q, ctrl+c to quit.")
+	text := lipgloss.NewStyle().Foreground(colors.Gray).Render("Press q, Q, ctrl+c to quit.")
 	s += "\n" + text + "\n"
 
 	return s
