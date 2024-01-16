@@ -1,9 +1,11 @@
 package ui
 
 import (
+	"os/exec"
 	"unicode"
 
 	colors "github.com/Jonath-z/azle-start/ui/Colors"
+	"github.com/Jonath-z/azle-start/utils"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
@@ -40,6 +42,11 @@ func (state nameState) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "backspace":
 			if state.name != "" {
 				state.name = state.name[:len(state.name)-1]
+			}
+		case "enter":
+			if len(state.name) >= 3 {
+				cmd := exec.Command("node", "--version")
+				utils.ProcessCommand(cmd)
 			}
 		}
 	}
