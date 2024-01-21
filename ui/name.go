@@ -1,7 +1,6 @@
 package ui
 
 import (
-	"fmt"
 	"unicode"
 
 	colors "github.com/Jonath-z/azle-start/ui/Colors"
@@ -46,7 +45,6 @@ func (state nameState) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		case "enter":
 			if len(state.name) >= 3 {
-				fmt.Println(state.boilerplate)
 				utils.CreateAzleProject(state.name, &state.boilerplate)
 			}
 		}

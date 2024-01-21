@@ -15,12 +15,14 @@ var availableBoilerPlates = []string{"default", "chat-completion-bot", "assistan
 func CreateAzleProject(folderName string, boilerplate *string) {
 	if boilerplate != nil && !helpers.Contains(availableBoilerPlates, *boilerplate) {
 		log.Fatal("The boilerplate specified does not exist")
+		os.Exit(1)
 	}
 
 	var initialzedProjectPath = ""
 	path, err := os.Getwd()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal(err.Error())
+		os.Exit(1)
 	}
 
 	if folderName == "." {
@@ -31,11 +33,12 @@ func CreateAzleProject(folderName string, boilerplate *string) {
 		initialzedProjectPath = path + "/" + folderName
 	}
 
-	defaultAzleProjectPath := "./starter-kits/default"
+	defaultAzleProjectPath := path + "/" + "starter-kits/" + *boilerplate
 	cmd := exec.Command("cp", "-r", defaultAzleProjectPath, initialzedProjectPath)
 	initializedProjectErr := cmd.Run()
 	if initializedProjectErr != nil {
-		log.Fatal(initializedProjectErr)
+		fmt.Println(initializedProjectErr.Error())
+		os.Exit(1)
 	}
 	fmt.Println("-------------------Created an azle project------------------------------")
 	checkoutToProjectDirErr := os.Chdir(initialzedProjectPath)
