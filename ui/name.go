@@ -1,7 +1,7 @@
 package ui
 
 import (
-	"os/exec"
+	"fmt"
 	"unicode"
 
 	colors "github.com/Jonath-z/azle-start/ui/Colors"
@@ -11,12 +11,14 @@ import (
 )
 
 type nameState struct {
-	name string
+	name        string
+	boilerplate string
 }
 
-func InitializeNameState() nameState {
+func InitializeNameState(boilerplate string) nameState {
 	state := nameState{
-		name: "",
+		name:        "",
+		boilerplate: boilerplate,
 	}
 
 	return state
@@ -29,7 +31,6 @@ func (state nameState) Init() tea.Cmd {
 func (state nameState) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
-
 		if len(msg.Runes) > 0 {
 			if !unicode.IsSymbol(msg.Runes[0]) {
 				state.name += msg.String()
@@ -45,8 +46,8 @@ func (state nameState) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		case "enter":
 			if len(state.name) >= 3 {
-				cmd := exec.Command("node", "--version")
-				utils.ProcessCommand(cmd)
+				fmt.Println(state.boilerplate)
+				utils.CreateAzleProject(state.name, &state.boilerplate)
 			}
 		}
 	}

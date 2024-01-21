@@ -12,8 +12,8 @@ import (
 
 var availableBoilerPlates = []string{"default", "chat-completion-bot", "assistant-deBot"}
 
-func CreateDefaulAzleProject(folderName string, boilerplate *string) {
-	if boilerplate != nil && !helpers.Contains(availableBoilerPlates, boilerplate) {
+func CreateAzleProject(folderName string, boilerplate *string) {
+	if boilerplate != nil && !helpers.Contains(availableBoilerPlates, *boilerplate) {
 		log.Fatal("The boilerplate specified does not exist")
 	}
 
@@ -38,12 +38,17 @@ func CreateDefaulAzleProject(folderName string, boilerplate *string) {
 		log.Fatal(initializedProjectErr)
 	}
 	fmt.Println("-------------------Created an azle project------------------------------")
+	checkoutToProjectDirErr := os.Chdir(initialzedProjectPath)
+	if checkoutToProjectDirErr != nil {
+		log.Fatal("Faile to checkout to the project directory", checkoutToProjectDirErr.Error())
+		os.Exit(1)
+	}
 	installDependenciesCmd := exec.Command("npm", "install")
-	fmt.Println(installDependenciesCmd.ProcessState.String())
-
-	installDependenciesCmdErr := installDependenciesCmd.Run()
-	if installDependenciesCmdErr != nil {
-		log.Fatal(installDependenciesCmdErr)
+	depsErr := ProcessCommand(installDependenciesCmd)
+	if depsErr != nil {
+		log.Fatal("Failed to install dependencies")
+		os.Exit(1)
 	}
 	fmt.Println("-------------------Installed dependencies------------------------------")
+	os.Exit(0)
 }

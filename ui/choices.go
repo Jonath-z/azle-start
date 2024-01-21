@@ -18,7 +18,7 @@ type model struct {
 
 func InitialModel() model {
 	m := model{
-		choices:  []string{"default", "assistant-bot", "chat-completion-bot"},
+		choices:  []string{"default", "assistant-deBot", "chat-completion-bot"},
 		cursor:   0,
 		selected: 0,
 	}
@@ -46,7 +46,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		case "enter", " ":
 			m.selected = m.cursor
-			nameState := tea.NewProgram(InitializeNameState())
+			nameState := tea.NewProgram(InitializeNameState(m.choices[m.selected]))
 			_, err := nameState.Run()
 			if err != nil {
 				log.Fatal("Error while initializing the name layout")

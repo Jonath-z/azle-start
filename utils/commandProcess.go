@@ -7,20 +7,21 @@ import (
 	"os/exec"
 )
 
-func ProcessCommand(cmd *exec.Cmd) {
+func ProcessCommand(cmd *exec.Cmd) error {
 	stdin, err := cmd.StdinPipe()
 
 	if err != nil {
-		fmt.Println(err)
+		return err
 	}
 	defer stdin.Close()
-	buf := new(bytes.Buffer) // THIS STORES THE NODEJS OUTPUT
+	buf := new(bytes.Buffer)
 	cmd.Stdout = buf
 	cmd.Stderr = os.Stderr
 
 	if err = cmd.Start(); err != nil {
 		fmt.Println("An error occured: ", err)
+		return err
 	}
 
-	cmd.Wait()
+	return cmd.Wait()
 }

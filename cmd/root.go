@@ -5,12 +5,11 @@ import (
 	"os"
 
 	"github.com/Jonath-z/azle-start/ui"
-	"github.com/Jonath-z/azle-start/utils"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/spf13/cobra"
 )
 
-var rootCmd = &cobra.Command{
+var RootCmd = &cobra.Command{
 	Use:   "azle-start",
 	Short: "Welcome to azle-start.",
 	Long:  "Welcome to azle-start, your tool for quickly and easily starting with azle.",
@@ -23,19 +22,17 @@ var rootCmd = &cobra.Command{
 				os.Exit(1)
 			}
 
-		} else {
-			utils.CreateDefaulAzleProject(".", &args[1])
 		}
 	},
 }
 
 func Execute() {
-	err := rootCmd.Execute()
+	err := RootCmd.Execute()
 	if err != nil {
 		os.Exit(1)
 	}
 }
 
 func init() {
-	rootCmd.Flags().BoolP("help", "h", false, "Help")
+	RootCmd.Flags().BoolP("help", "h", false, "Help")
 }
