@@ -20,6 +20,7 @@ func CreateAzleProject(folderName string, boilerplate *string) {
 
 	var initialzedProjectPath = ""
 	path, err := os.Getwd()
+	fmt.Println(path)
 	if err != nil {
 		log.Fatal(err.Error())
 		os.Exit(1)

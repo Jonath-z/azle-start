@@ -1,0 +1,3 @@
+[submodule "azle"]
+	path = azle
+	url = https://github.com/demergent-labs/azle
