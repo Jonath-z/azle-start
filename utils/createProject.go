@@ -7,10 +7,12 @@ import (
 	"os/exec"
 	"strings"
 
+	"github.com/Jonath-z/azle-start/script"
+
 	"github.com/Jonath-z/azle-start/helpers"
 )
 
-var availableBoilerPlates = []string{"default", "chat-completion-bot", "assistant-deBot"}
+var availableBoilerPlates = script.GetExamplesList()
 
 func CreateAzleProject(folderName string, boilerplate *string) {
 	if boilerplate != nil && !helpers.Contains(availableBoilerPlates, *boilerplate) {
@@ -18,10 +20,11 @@ func CreateAzleProject(folderName string, boilerplate *string) {
 		os.Exit(1)
 	}
 
-	var initialzedProjectPath = ""
+	var initializedProjectPath = ""
 	path, err := os.Getwd()
 	fmt.Println(path)
 	if err != nil {
+		fmt.Println("Reached here")
 		log.Fatal(err.Error())
 		os.Exit(1)
 	}
@@ -29,30 +32,32 @@ func CreateAzleProject(folderName string, boilerplate *string) {
 	if folderName == "." {
 		pathComponents := strings.Split(path, "/")
 		currentDir := pathComponents[len(pathComponents)-1]
-		initialzedProjectPath = path + "/" + currentDir
+		initializedProjectPath = path + "/" + currentDir
 	} else {
-		initialzedProjectPath = path + "/" + folderName
+		initializedProjectPath = path + "/" + folderName
 	}
 
-	defaultAzleProjectPath := path + "/" + "starter-kits/" + *boilerplate
-	cmd := exec.Command("cp", "-r", defaultAzleProjectPath, initialzedProjectPath)
+	boilerplatePath := path + "/" + "azle/examples/" + *boilerplate
+	cmd := exec.Command("cp", "-r", boilerplatePath, initializedProjectPath)
 	initializedProjectErr := cmd.Run()
 	if initializedProjectErr != nil {
 		fmt.Println(initializedProjectErr.Error())
 		os.Exit(1)
 	}
-	fmt.Println("-------------------Created an azle project------------------------------")
-	checkoutToProjectDirErr := os.Chdir(initialzedProjectPath)
+
+	checkoutToProjectDirErr := os.Chdir(initializedProjectPath)
 	if checkoutToProjectDirErr != nil {
 		log.Fatal("Faile to checkout to the project directory", checkoutToProjectDirErr.Error())
 		os.Exit(1)
 	}
+
 	installDependenciesCmd := exec.Command("npm", "install")
 	depsErr := ProcessCommand(installDependenciesCmd)
 	if depsErr != nil {
 		log.Fatal("Failed to install dependencies")
 		os.Exit(1)
 	}
-	fmt.Println("-------------------Installed dependencies------------------------------")
+
+	fmt.Println("-------------------Dependencies installed------------------------------")
 	os.Exit(0)
 }
