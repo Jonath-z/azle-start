@@ -1,8 +1,6 @@
 package main
 
-import (
-	"github.com/Jonath-z/azle-start/cmd"
-)
+import "github.com/Jonath-z/azle-start/cmd"
 
 func main() {
 	cmd.Execute()

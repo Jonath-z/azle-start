@@ -2,6 +2,7 @@ package ui
 
 import (
 	"fmt"
+	"github.com/Jonath-z/azle-start/script"
 	"log"
 	"os"
 
@@ -18,7 +19,7 @@ type model struct {
 
 func InitialModel() model {
 	m := model{
-		choices:  []string{"default", "assistant-deBot", "chat-completion-bot"},
+		choices:  script.GetExamplesList(),
 		cursor:   0,
 		selected: 0,
 	}
