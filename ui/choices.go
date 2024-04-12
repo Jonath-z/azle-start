@@ -9,22 +9,23 @@ import (
 	colors "github.com/Jonath-z/azle-start/ui/Colors"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	"golang.org/x/term"
 )
 
 type model struct {
-	cursor   int
-	choices  []string
-	selected int
+	cursor         int
+	choices        []string
+	selected       int
+	scrollPosition int
 }
 
 func InitialModel() model {
-	m := model{
-		choices:  helpers.GetExamplesList(),
-		cursor:   0,
-		selected: 0,
+	return model{
+		choices:        helpers.GetExamplesList(),
+		cursor:         0,
+		selected:       0,
+		scrollPosition: 0,
 	}
-
-	return m
 }
 
 func (m model) Init() tea.Cmd {
@@ -40,10 +41,21 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "up", "k":
 			if m.cursor > 0 {
 				m.cursor--
+				if m.cursor < m.scrollPosition {
+					m.scrollPosition = m.cursor
+				}
 			}
 		case "down", "j":
-			if m.cursor < len(m.choices)-1 {
-				m.cursor++
+			_, terminalHeight, err := term.GetSize(int(os.Stdout.Fd()))
+			if err != nil {
+				log.Println("Error getting terminal height", err)
+			} else {
+				if m.cursor < len(m.choices)-1 {
+					m.cursor++
+					if m.cursor >= m.scrollPosition+terminalHeight-3 {
+						m.scrollPosition++
+					}
+				}
 			}
 		case "enter", " ":
 			m.selected = m.cursor
@@ -63,7 +75,19 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (m model) View() string {
 	s := "What are you starting with?\n\n"
 
-	for i, choice := range m.choices {
+	visibleChoices := make([]string, 0)
+	_, terminalHeight, err := term.GetSize(int(os.Stdout.Fd()))
+	if err != nil {
+		log.Println("Error getting terminal size:", err)
+	}
+	startIndex := m.scrollPosition
+	endIndex := startIndex + terminalHeight - 4
+
+	for i := startIndex; i < endIndex && i < len(m.choices); i++ {
+		visibleChoices = append(visibleChoices, m.choices[i])
+	}
+
+	for i, choice := range visibleChoices {
 		cursor := "   "
 		if m.cursor == i {
 			activeCursor := lipgloss.NewStyle().Foreground(colors.Green).Render(">>>")
