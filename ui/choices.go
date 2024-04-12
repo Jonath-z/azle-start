@@ -2,10 +2,10 @@ package ui
 
 import (
 	"fmt"
-	"github.com/Jonath-z/azle-start/script"
 	"log"
 	"os"
 
+	"github.com/Jonath-z/azle-start/helpers"
 	colors "github.com/Jonath-z/azle-start/ui/Colors"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -19,7 +19,7 @@ type model struct {
 
 func InitialModel() model {
 	m := model{
-		choices:  script.GetExamplesList(),
+		choices:  helpers.GetExamplesList(),
 		cursor:   0,
 		selected: 0,
 	}
