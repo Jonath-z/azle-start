@@ -1,4 +1,4 @@
-package script
+package helpers
 
 import (
 	"log"

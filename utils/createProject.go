@@ -7,12 +7,10 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/Jonath-z/azle-start/script"
-
 	"github.com/Jonath-z/azle-start/helpers"
 )
 
-var availableBoilerPlates = script.GetExamplesList()
+var availableBoilerPlates = helpers.GetExamplesList()
 
 func CreateAzleProject(folderName string, boilerplate *string) {
 	if boilerplate != nil && !helpers.Contains(availableBoilerPlates, *boilerplate) {
